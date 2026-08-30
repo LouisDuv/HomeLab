@@ -1,0 +1,6 @@
+- name : "Destroying K3s cluster"
+  hosts: master
+  become: true
+  gather_facts: true
+  roles:
+    - destroy

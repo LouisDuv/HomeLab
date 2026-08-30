@@ -1,0 +1,2 @@
+role_path : "{{ project_path }}/roles/destroy"
+k3s_deletion_path : "/usr/local/bin/k3s-uninstall.sh"

@@ -1,0 +1,6 @@
+- name: "Package installation"
+  ansible.builtin.apt:
+    pkg:
+      - git
+      - nano
+      - curl

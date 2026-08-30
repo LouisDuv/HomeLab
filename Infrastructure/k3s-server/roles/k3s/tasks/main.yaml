@@ -1,0 +1,7 @@
+- name : "K3s script execution"
+  ansible.builtin.script : "{{ role_path }}/files/k3s-installation.sh"
+  register: k3s_output_install
+
+- name : "Debug"
+  debug:
+    msg: "{{ k3s_output_install.stdout }}"

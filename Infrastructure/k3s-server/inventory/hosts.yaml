@@ -1,0 +1,7 @@
+all:
+  children:
+    master:
+      hosts:
+        gateway:
+          name: lduvanel
+          ansible_connection: local

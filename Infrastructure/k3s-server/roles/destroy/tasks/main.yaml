@@ -1,0 +1,2 @@
+- name : "Deleting K3s cluster"
+  ansible.builtin.script: "{{ k3s_deletion_path }}"
