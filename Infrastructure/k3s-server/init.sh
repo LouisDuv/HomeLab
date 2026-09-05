@@ -2,6 +2,7 @@
 
 echo "[0/2] Sourcing helpers"
 source ./helpers/functions.sh
+source ./helpers/vars.sh
 
 
 echo "[1/2] Primary package install"
