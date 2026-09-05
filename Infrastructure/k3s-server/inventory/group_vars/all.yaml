@@ -1,3 +1,1 @@
 ansible_python_interpreter : "/usr/bin/python3"
-project_path : "/home/lduvanel/Documents/HomeLab/Infrastructure/k3s-server"
-root_path : "/home/lduvanel"
