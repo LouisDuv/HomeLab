@@ -5,3 +5,7 @@ all:
         gateway:
           name: lduvanel
           ansible_connection: local
+    agent:
+      hosts:
+        agent-1:
+          name: lduvanel

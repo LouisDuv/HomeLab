@@ -1,0 +1,7 @@
+# config files
+ansible.cfg
+
+# generic files
+*.log
+*.env
+*-vault-key.txt

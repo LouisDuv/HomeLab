@@ -1,1 +1,1 @@
-ansible-playbook ./playbooks/main.yaml
+ansible-playbook ./playbooks/server.yaml
