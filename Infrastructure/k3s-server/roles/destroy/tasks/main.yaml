@@ -1,2 +1,17 @@
+- name: Check if k3s deletion script exists
+  ansible.builtin.stat:
+    path: "{{ k3s_deletion_path }}"
+  delegate_to: localhost
+  register: k3s_deletion_stat
+
 - name : "Deleting K3s cluster"
   ansible.builtin.script: "{{ k3s_deletion_path }}"
+  register : k3s_deletion_output
+  when : k3s_deletion_stat.stat.exists | default(false)
+
+- name: "Save K3s deletion log"
+  ansible.builtin.copy:
+    content: "{{ k3s_deletion_output.stdout }}"
+    dest: "{{ role_path }}/logs/k3s-deletion.log"
+    mode: '0644'
+  when: k3s_deletion_output.changed | default(false)
