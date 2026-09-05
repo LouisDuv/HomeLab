@@ -1,1 +1,0 @@
-role_path : "{{ project_path }}/roles/k3s"
