@@ -1,0 +1,21 @@
+#!/bin/bash
+
+LOG_FILE="k3s-agent-install.log"
+
+echo "[INFO] Attaching agent node to the k3s cluster"
+
+echo "[1/3] Checking if k3s-agent service is already running..."
+if systemctl is-active --quiet k3s-agent; then
+    echo "[INFO] k3s-agent service is already active and running. Exiting successfully."
+    exit 0
+fi
+
+echo "[2/3] Creating log file"
+touch "$LOG_FILE" 
+
+echo "[3/3] Executing k3s agent join"
+k3s agent \
+    --debug \
+    --log "$LOG_FILE" \
+    --token "{{ k3s_token }}" \
+    --node-name "{{ inventory_hostname }}"
