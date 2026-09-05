@@ -1,5 +1,5 @@
 - name: "Control plane initialization"
-  hosts: "master"
+  hosts: "agent"
   become: true
   gather_facts: true
   roles:
