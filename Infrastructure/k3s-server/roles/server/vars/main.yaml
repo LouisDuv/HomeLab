@@ -1,0 +1,1 @@
+data_directory : "{{ ansible_facts['env']['HOME'] }}/cluster"

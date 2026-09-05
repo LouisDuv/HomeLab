@@ -1,13 +1,23 @@
 - name : Pre-installation tests
   ansible.builtin.import_tasks: "test.yaml"
 
-- name : Watch variables
-  debug: 
-    msg: "SERVICE IS : {{ k3s_service }}"
+- name: Create cluster data directory
+  ansible.builtin.file:
+    path: "{{ data_directory }}"
+    state: directory
+    mode: '0755'
 
-- name: "K3s script execution"
-  ansible.builtin.script: "{{ role_path }}/files/k3s-installation.sh"
-  register: k3s_output_install
+- block:
+    - name: Template K3s installation script in /tmp
+      ansible.builtin.template:
+        src: "{{role_path}}/files/k3s-installation.sh.j2"
+        dest: "/tmp/k3s-installation.sh"
+        mode: '0755'
+
+    - name: Execute K3s installation script
+      ansible.builtin.command: /tmp/k3s-installation.sh
+      register: k3s_output_install
+
   when: k3s_service != "active"
 
 - name: "Save K3s installation output to a log file"
