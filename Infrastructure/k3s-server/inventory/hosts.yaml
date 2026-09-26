@@ -3,12 +3,12 @@ all:
     master:
       hosts:
         gateway:
-          name: lduvanel
           ansible_host: 192.168.29.1
           ansible_connection: local
+          anisble_user: lduvanel
     agent:
       hosts:
-        agent-1:
-          name: lduvanel
+        agent-01:
           ansible_host: 192.168.29.77
-
+          ansible_user: lduvanel
+          ansible_python_interpreter: /usr/bin/python3
