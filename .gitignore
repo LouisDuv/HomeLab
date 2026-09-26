@@ -5,3 +5,4 @@ ansible.cfg
 *.log
 *.env
 *-vault-key.txt
+.venv
