@@ -14,8 +14,10 @@ echo "[2/3] Creating log file"
 touch "$LOG_FILE" 
 
 echo "[3/3] Executing k3s agent join"
-k3s agent \
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="agent \
+    --server https://{{ hostvars['gateway']['ansible_host'] }}:6443 \
     --debug \
-    --log "$LOG_FILE" \
-    --token "{{ k3s_token }}" \
-    --node-name "{{ inventory_hostname }}"
+    --log $LOG_FILE \
+    --token {{ hostvars['gateway']['k3s_token'] }} \
+    --node-name {{ inventory_hostname }}
+" sh -s -

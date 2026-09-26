@@ -1,11 +1,15 @@
-- name: Read K3s token file from master node
-  ansible.builtin.slurp:
-    src: "{{ data_directory }}/k3s/server/node-token"
-  register: k3s_token_raw
+# Retrieving token from master node
+- block:
+  - name: Read K3s token file from master node
+    ansible.builtin.slurp:
+      src: "{{ data_directory }}/server/node-token"
+    register: k3s_token_raw
 
-- name: Set K3s token as a usable fact
-  ansible.builtin.set_fact:
-    k3s_token: "{{ k3s_token_raw['content'] | b64decode | trim }}"
+  - name: "Storing token"
+    ansible.builtin.set_fact:
+      k3s_token : "{{ k3s_token_raw['content'] | b64decode | trim }}"
+
+  when: inventory_hostname == 'gateway'
 
 - block:
     - name: Template K3s installation script in /tmp
@@ -17,3 +21,5 @@
     - name: Execute K3s installation script
       ansible.builtin.command: /tmp/k3s-agent-installation.sh
       register: k3s_output_install
+    
+  when: inventory_hostname == 'agent-01'
