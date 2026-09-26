@@ -9,8 +9,9 @@ Learning about DevOps concepts by building my own platform of services
 
 ### In-coming
 
-- Agent nodes attachment script
 - Bench of test to ensure the cluster is healthy and ready-to use 
+- Changing functionalities to be customizable
+- Add k9s installation as UI/UX
 
 ## Manager your k3s cluster
 
@@ -49,7 +50,7 @@ To allow Ansible Controller to collect these data, we need to add their referenc
 vault_identity_list = [your_node]@vault/.[your_node]-vault-key.txt, [your_node_2]@vault/.[your_node_2]-vault-key.txt,...
 ```
 
-### Create the control-plane
+### Manager the Master Node
 
 The following steps install the control-plane only (master node) only. By default, the control plane is the local node.
 
@@ -69,4 +70,24 @@ cd ./Infrastructure/k3s-server
 # Get a view installation and deletion of the cluster
 cat $K3S_INSTALL_LOG
 cat $K3S_DELETION_LOG
+```
+
+### Manage Agent Nodes
+
+Agent nodes can be used for higher redundancy of data and as an expension of ressources like CPU and RAM.
+
+**Requirements**
+- A Master Node is set as a Controll-Plane in your K3S cluster (following past script)
+- Master Node can SSH agent node
+- Fill credentials in secret encrypted (optional) file or in host file (e.g at ./Infrastructure/k3s-server/inventory/hosts.yaml)
+
+```bash
+# Go to k3s-server dir
+cd ./Infrastructure/k3s-server
+
+# After fullfilling all requirements, execute this script for your agent node to join master node
+./create-agent.sh
+
+# Separata your agent from your cluster
+./delete-agent.sh
 ```
