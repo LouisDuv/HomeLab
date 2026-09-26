@@ -12,6 +12,10 @@ is_package_installed() {
     fi
 }
 
+has_cmd() {
+  command -v "$1" >/dev/null 2>&1
+}
+
 # Vault-Management
 
 vault_decrypt() {
