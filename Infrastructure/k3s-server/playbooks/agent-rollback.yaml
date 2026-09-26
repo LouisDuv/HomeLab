@@ -1,0 +1,15 @@
+- name : "Destroying K3s cluster"
+  hosts: "agent"
+  become: true
+  gather_facts: true
+  roles:
+    - agent-down
+
+- name: "Refreshing Master Node View"
+  hosts: "master"
+  become: true
+  gather_facts: true
+  tasks:
+    - name: "Deleting nodes from ETCD DB"
+      ansible.builtin.command: "kubectl delete node agent-01"
+      

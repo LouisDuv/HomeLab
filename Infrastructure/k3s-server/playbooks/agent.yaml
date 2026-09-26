@@ -1,8 +1,15 @@
-- name: "Control plane initialization"
-  hosts: "agent"
+- name: "Agent node rattachment"
+  hosts: "agent-01"
   become: true
   gather_facts: true
   roles:
     - basics
+
+- name: "Register agent as a worker node"
+  hosts: all
+  gather_facts: true
+  become: true
+  roles:
     - agent
+
 
