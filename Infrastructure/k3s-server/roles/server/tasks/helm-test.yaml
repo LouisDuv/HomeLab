@@ -1,0 +1,8 @@
+- name: "= Test = Get Helm binary file"
+  ansible.builtin.stat:
+    path: "/usr/local/bin/helm"
+  register: file_check
+
+- name : Setting variables
+  ansible.builtin.set_fact:
+    helm_bin : "{{ file_check.stat.exists }}"

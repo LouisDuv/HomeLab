@@ -1,5 +1,5 @@
 - name : Pre-installation tests
-  ansible.builtin.import_tasks: "test.yaml"
+  ansible.builtin.import_tasks: "server-test.yaml"
 
 - name: Create cluster data directory
   ansible.builtin.file:
@@ -26,3 +26,10 @@
     dest: "{{ role_path }}/logs/k3s-installation.log"
     mode: '0644'
   when: k3s_output_install.changed | default(false)
+
+- name: "Pre-installation of Helm package tests"
+  ansible.builtin.import_tasks: "helm-test.yaml"
+
+- name : Helm installation
+  ansible.builtin.import_tasks: "helm.yaml"
+  when: not helm_bin

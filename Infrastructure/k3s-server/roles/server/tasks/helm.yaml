@@ -1,0 +1,14 @@
+- name: "Helm script installation"
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+    dest: "{{role_path}}/files/get_helm.sh" 
+
+- name: "Changing script mode"
+  file:
+    path: "{{role_path}}/files/get_helm.sh" 
+    state: file
+    mode: 700
+
+- name: "Execution of Helm script"
+  script: "{{role_path}}/files/get_helm.sh" 
+
