@@ -1,0 +1,11 @@
+apiVersion: v2
+# chart name
+name: traefik
+# chart version
+version: "0.0.1"
+# app version
+appVersion: "3.7.14"
+
+type: application
+
+description: "Custom Traefik Proxy"

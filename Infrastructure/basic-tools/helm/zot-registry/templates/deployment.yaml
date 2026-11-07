@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zot-registry
+  namespace: kube-dev
+  labels:
+    helm.sh/chart: zot-0.1.130
+    app.kubernetes.io/name: zot
+    app.kubernetes.io/instance: zot-registry
+    app.kubernetes.io/version: "v2.1.23"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zot
+      app.kubernetes.io/instance: zot-registry
+  template:
+    metadata:
+      annotations:
+      labels:
+        app.kubernetes.io/name: zot
+        app.kubernetes.io/instance: zot-registry
+    spec:
+      serviceAccountName: zot-registry
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001 # Regular non-privileged users
+      containers:
+        - name: zot
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            null
+          ports:
+            - name: zot
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/registry
+          livenessProbe:
+            initialDelaySeconds: 5
+            httpGet:
+              path: /livez
+              port: 5000
+              scheme: HTTP
+          readinessProbe:
+            initialDelaySeconds: 5
+            httpGet:
+              path: /readyz
+              port: 5000
+              scheme: HTTP
+          startupProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+            httpGet:
+              path: /startupz
+              port: 5000
+              scheme: HTTP
+          resources:
+            requests:
+              cpu: {{ .Values.resources.cpu }}
+              memory: {{ .Values.resources.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+      volumes:
+        - name: data
+          emptyDir: {}
+      dnsPolicy: ClusterFirst

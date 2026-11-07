@@ -1,0 +1,11 @@
+apiVersion: v2
+# chart name
+name: zot
+# chart version
+version: "0.0.1"
+# app version
+appVersion: "2.1.23"
+
+type: application
+
+description: "Artifacts registry"

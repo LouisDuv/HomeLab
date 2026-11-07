@@ -1,0 +1,14 @@
+image:
+  name: ghcr.io/project-zot/zot
+  tag: v2.1.23
+
+service:
+  name: zot
+  port: "5000"
+
+resources:
+  cpu: 100m
+  memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
