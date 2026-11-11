@@ -1,16 +1,16 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: traefik-default
+  name: "traefik-{{ .Values.namespace }}"
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-default
+    app.kubernetes.io/instance: "traefik-{{ .Values.namespace }}"
     helm.sh/chart: traefik-41.7.1
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: traefik-default
+  name: "traefik-{{ .Values.namespace }}"
 subjects:
   - kind: ServiceAccount
     name: traefik

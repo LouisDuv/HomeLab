@@ -1,26 +1,18 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: traefik
   namespace: kube-system
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-default
+    app.kubernetes.io/instance: "traefik-{{ .Values.namespace }}"
     helm.sh/chart: traefik-41.7.1
     app.kubernetes.io/managed-by: Helm
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: traefik
-      app.kubernetes.io/instance: traefik-default
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
-  minReadySeconds: 0
-  
+      app.kubernetes.io/instance: "traefik-{{ .Values.namespace }}"
   template: 
     metadata:
       annotations:
@@ -28,27 +20,23 @@ spec:
         prometheus.io/port: "9100"
         prometheus.io/scrape: "true"
       labels:
-        app.kubernetes.io/instance: traefik-default
+        app.kubernetes.io/instance: "traefik-{{ .Values.namespace }}"
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: traefik
         helm.sh/chart: traefik-41.7.1
     spec:
-      automountServiceAccountToken: true
+      serviceAccountName: traefik
+      automountServiceAccountToken: true # for token of the SA
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet # targeting coredns solver instead of local solver
       containers:
       - args:
-        - --entryPoints.metrics.address=:9100/tcp
-        - --entryPoints.traefik.address=:8080/tcp
         - --entryPoints.web.address=:{{ .Values.listeningPort.web }}/tcp
         - --entryPoints.websecure.address=:{{ .Values.listeningPort.websecure }}/tcp
         - --api.dashboard={{ .Values.api.enabled }}
         - --ping=true
-        - --metrics.prometheus=true
-        - --metrics.prometheus.entrypoint=metrics
-        - --providers.kubernetescrd
-        - --providers.kubernetescrd.allowEmptyServices=true
-        - --providers.kubernetesingress
-        - --providers.kubernetesingress.allowEmptyServices=true
-        - --providers.kubernetesingress.ingressendpoint.publishedservice=default/traefik
+        - --providers.kubernetescrd=true
+        - --providers.kubernetesingress=true
         - --entryPoints.websecure.http.tls=true
         - --log.level=INFO
         env:
@@ -107,21 +95,22 @@ spec:
             cpu: {{ .Values.resources.limits.cpu }}
             memory: {{ .Values.resources.limits.memory }}
         securityContext:
-          allowPrivilegeEscalation: false
+          allowPrivilegeEscalation: true
           capabilities:
             drop:
             - ALL
+            add:
+            - NET_BIND_SERVICE # binding ports 80 and 443 of local host            
           readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /data
           name: data
         - mountPath: /tmp
           name: tmp
-      hostNetwork: false
-      securityContext:
-        runAsGroup: 65532
-        runAsNonRoot: true
-        runAsUser: 65532
+      securityContext: # root user (mandatory to listen on port 80 443)
+        runAsGroup: 0
+        runAsNonRoot: false
+        runAsUser: 0
         seccompProfile:
           type: RuntimeDefault
       serviceAccountName: traefik
