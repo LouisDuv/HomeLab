@@ -1,6 +1,9 @@
 # config files
 ansible.cfg
 
+# vscode extensions settings
+.vscode
+
 # generic files
 *.log
 *.env
