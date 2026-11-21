@@ -19,16 +19,23 @@ More to come !
 
 ## 🏗️ Deployment Architecture & Standards
 
-All services are packaged as local custom Helm charts (or vendor charts with pinned custom override values):
+To ensure reproducible deployments and avoid relying on public repositories (downtime, removed versions, or paywall transitions), Helm charts are mirrored to the internal OCI registry (`oci://registry.homelab.com/charts`).
 
-* **Deploy basic namespaces**: Execute the bash file to create automatically basic namespaces
-  ```bash
-  cd Infrastructure/basic-tools
-  sudo chmod +x ./init-namespace.sh
-  ./init-namespace.sh
-  ```
-* **Declarative Configurations**: Each service directory maintains its `values.yaml` 
-* **Dry-Run & Validation**: Manifests can be inspected locally prior to cluster application using `helm template` without requiring live deployments:
-  ```bash
-  helm template <release-name> ./<chart-dir> -f ./<chart-dir>/values.yaml
-  ```
+### How It Works
+
+* **Immutable charts in the OCI registry:** `.tgz` archives are pulled at a pinned version from upstream and pushed to the private registry using `mirror-chart.sh`.
+* **Lightweight Git repository:** Only override files (`values.yaml`) and deployment configurations are versioned in Git.
+* **Deep-merge overrides:** During deployment, Helm automatically merges the keys defined in the local `values.yaml` with the mirrored chart's default values.
+* **Specific charts:** Specific charts are customed locally to adapt templates
+
+### Usage
+
+```bash
+# 1. Mirror a chart to the internal registry
+./mirror-chart.sh <repo_name> <chart_name> <repo_url> [version]
+
+# 2. Deploy while overriding only the required values
+helm upgrade --install <release> oci://[registry.homelab.com/charts/](https://registry.homelab.com/charts/)<chart_name> \
+  --version <version> \
+  --plain-http \
+  -f values.yaml
