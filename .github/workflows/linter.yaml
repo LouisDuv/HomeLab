@@ -13,4 +13,5 @@ jobs:
         uses: actions/checkout@v4
       - name: "Linter & Formatter scan of Helm charts"
         run: |
+          pip install uv
           uv run pre-commit run --all-files
