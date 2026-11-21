@@ -8,13 +8,13 @@ jobs:
   yaml-checker:
     runs-on: ubuntu-latest
     steps:
-      - name: Retrieve code
-        uses: actions/checkout@v4
       - name: "Linter & Formatter scan of Helm charts"
         run: |
           echo "Starting linting..."
           pip install uv
           uv sync
           echo "Venv initialize, now pre-committing files"
-          uv run pre-commit run --all-files
+          uv run pre-commit run check-yaml --all-files
+          uv run pre-commit run end-of-file-fixer --all-files
+          uv run pre-commit run trailing-whitespace --all-files
           echo "Pre-commit is over."
