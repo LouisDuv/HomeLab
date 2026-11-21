@@ -11,12 +11,6 @@ jobs:
     steps:
       - name: Retrieve code
         uses: actions/checkout@v4
-      - name: "Venv execution"
-        run: |
-          echo "Synchronizing venv..."
-          pip install uv
-          uv sync
-          echo "Venv now up. Ready to use."
       - name: "Linter & Formatter scan of Helm charts"
         run: |
           uv run pre-commit run --all-files
