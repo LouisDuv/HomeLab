@@ -8,6 +8,8 @@ jobs:
   yaml-checker:
     runs-on: ubuntu-latest
     steps:
+      - name: "Retrieving code source"
+        uses: actions/checkout@v4
       - name: "Linter & Formatter scan of Helm charts"
         run: |
           echo "Starting linting..."
